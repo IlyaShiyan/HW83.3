@@ -1,19 +1,24 @@
 public class Book {
-    synchronized void increment(){
 
-        int i = 100;
+    int i = 100;
 
-        while (i!=0) {
+    synchronized void take(){
 
-            for (int j = 0; j < 3; j++) {
-
-                System.out.printf("%s %d \n", People.getName(), i);
-                i--;
+                System.out.printf("%s %s \n","Берёт книгу ", i);
+                i-=1;
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                 }
-            }
-        }
     }
+    synchronized void put(){
+
+                System.out.printf("%s %s \n","Сдаёт книгу ", i);
+                i+=1;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+    }
+
 }

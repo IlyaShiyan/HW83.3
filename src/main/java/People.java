@@ -1,28 +1,29 @@
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 public class People implements Runnable{
-
     Semaphore s;
-    Book book ;
-    private static String name;
+    String name;
+    Book book;
+    CountDownLatch cdl;
 
-    public People(Semaphore s, String name,Book book) {
+    public People(Semaphore s, String n, Book book,CountDownLatch c) {
         this.s = s;
-        this.name = name;
+        this.name = n;
         this.book = book;
-    }
-
-    public static String getName() {
-        return name;
+        this.cdl = c;
     }
 
     @Override
-    synchronized public void run() {
-        System.out.println("Человек "+ name + " пришёл в зал");
+    public void run() {
+        System.out.println("Человек "+ name + " пришёл");
         try {
-            System.out.println("Человек " + name + " берёт книги");
+            System.out.println("Человек " + name + " ожидает место");
             s.acquire();
-            book.increment();
+            for (int i = 0; i < 3; i++) {
+            book.take();
+            cdl.countDown();
+            }
             System.out.println("Человек " + name + " читает");
             Thread.sleep(3000);
         }
@@ -31,6 +32,8 @@ public class People implements Runnable{
         }
         System.out.println("Человек " + name + " уходит");
         s.release();
-
+        for (int i = 0; i < 3; i++) {
+            book.put();
+        }
     }
 }
